@@ -1,0 +1,50 @@
+---
+title: "MIE237 March 8--9 Labs"
+author: "Neil Montgomery"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+For this week you'll spend most of your computing time on the assignment. There is only the small matter of fitting multiple regression models, which is the same as fitting simple regression models but now using a "formula" with more than one term on the right.
+
+Here are a few examples using some of the Chapter 12 textbook datasets.
+
+```{r, eval=FALSE}
+library(rio)
+
+# Old fashioned way that works fine
+ex12_1 <- import("Ex12.01.txt")
+ex12_1_fit <- lm(y ~ x1 + x2, data = ex12_1)
+summary(ex12_1_fit)
+
+library(dplyr)
+# Fancier way using dplyr and %>% that enables typing help
+ex12_4 <- import("Ex12.04.txt")
+ex12_4 %>% 
+  lm(Final ~ Initial + Feed, data = .) %>% 
+  summary -> ex12_4_fit_summary
+
+# This dataset has silly variable names that trips up the import function. Let's
+# just ride with it and give the variables new names.
+ex12_7 <- import("Ex12.07.txt", header=TRUE)
+names(ex12_7) <- c("Flow", "Tension")
+
+# Looks like a non-linear relationship. We'll try the polynomial model as
+# suggested by the textbook.
+library(ggplot2)
+ex12_7 %>% 
+  ggplot(aes(x=Tension, y=Flow)) + geom_point()
+
+# We can add functions of variables right in the model specification. Usually
+# it's a good idea to wrap I() around such functions as in this case.
+ex12_7 %>% 
+  lm(Flow ~ Tension + I(Tension^2), data = .) %>% 
+  summary
+```
+
+## Your Task
+
+Finish your assignment. Time permitting, fit some multiple regression models from Chapter 12 questions 1 to 16.
